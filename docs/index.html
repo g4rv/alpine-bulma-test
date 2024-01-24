@@ -8,70 +8,132 @@
 			rel="stylesheet"
 			href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
 		/>
-		<script type="module" crossorigin src="./assets/index-fbyG3ro2.js"></script>
-		<link rel="stylesheet" crossorigin href="./assets/index-d5wmp_I6.css">
+		<script type="module" crossorigin src="./assets/index-O2rjlWLd.js"></script>
+		<link rel="stylesheet" crossorigin href="./assets/index-Y-1tPnSn.css">
 	</head>
 	<body>
-		<header>
-			<h1>Alpine & Bulma | test</h1>
+		<header class="has-background-primary">
+			<div class="hero hero-body container is-max-desktop">
+				<h1 class="title is-1 has-text-white">Alpine & Bulma | test</h1>
+			</div>
 		</header>
 		<main>
-			<section x-data="{...$store.tasks}">
-				<h2>Task list</h2>
-				<div>
-					<h3>In-Progress</h3>
-					<ul>
+			<section
+				class="section container is-max-desktop"
+				x-data="{...$store.tasks}"
+			>
+				<h2 class="title is-2">Task list</h2>
+				<div class="box has-background-white-ter">
+					<h3 class="title is-4">In-Progress</h3>
+					<ul class="is-flex is-flex-direction-column">
 						<template x-for="task in getInProgressTasks()">
 							<li
+								class="box"
 								x-data="{showBody: false, editing: false, taskTitle: task.title, taskBody: task.body}"
+								@click.outside="() => {
+                                    if(!editing) return
+                                    if(taskTitle === task.title && taskBody === task.body) {
+                                        taskTitle = task.title
+                                        taskBody = task.body
+                                        editing = false
+                                        return
+                                    }
+                                    if(confirm('Are you sure you want to discard all the changes?')) {
+                                        taskTitle = task.title
+                                        taskBody = task.body
+                                        editing = false
+                                    }
+                                }"
 							>
 								<div x-show="!editing">
-									<div>
+									<div
+										class="is-flex is-align-items-center is-flex-wrap-wrap gap"
+									>
 										<button
+											class="button is-small"
 											@click="showBody = !showBody"
 											x-bind:disabled="task.body.length === 0"
+											x-bind:title="task.body ? 'Show task details' : 'This task has no details'"
 										>
-											details
+											Details
 										</button>
-										<h4 x-text="task.title"></h4>
-										<input
-											type="checkbox"
-											x-bind:checked="task.status === 'done'"
-											@change="toggleTaskStatus(task.id)"
-										/>
-										<button @click="editing = true">Edit</button>
-										<button
-											@click="() => {
-                                            if(confirm('Are you sure you want to delete this task?')) {
-                                                deleteTask(task.id)
-                                            }
-                                        }"
-										>
-											delete
-										</button>
+										<div class="is-flex is-flex-grow-1">
+											<h4
+												class="is-flex-grow-1 mr-4"
+												title="Task title"
+												x-text="task.title"
+											></h4>
+											<input
+												type="checkbox"
+												x-bind:title="task.status === 'inProgress' ? 'Set this task status to done' : 'Set this task status to in propgress'"
+												x-bind:checked="task.status === 'done'"
+												@change="toggleTaskStatus(task.id)"
+											/>
+										</div>
+										<div class="is-flex is-align-items-center">
+											<button
+												class="button is-small is-primary has-text-weight-bold"
+												title="Edit this task"
+												@click="editing = true"
+											>
+												Edit
+											</button>
+											<button
+												class="ml-5 button is-small is-danger has-text-weight-bold"
+												title="Delete this task"
+												@click="() => {
+                                                if(confirm('Are you sure you want to delete this task?')) {
+                                                    deleteTask(task.id)
+                                                }
+                                            }"
+											>
+												Delete
+											</button>
+										</div>
 									</div>
-									<div x-show="showBody" x-transition>
-										<p x-text="task.body"></p>
+									<div
+										class="box mt-4 has-background-grey-lighter"
+										x-show="showBody"
+										x-transition
+									>
+										<p
+											class="has-text-dark"
+											title="Task body - details"
+											x-text="task.body"
+										></p>
 									</div>
 								</div>
 								<div x-show="editing">
-									<div>
-										<label>
-											<span>Task title</span>
-											<input x-bind:value="taskTitle" x-model="taskTitle" />
+									<div
+										class="is-flex is-align-items-center mb-4 gap is-flex-wrap-wrap"
+									>
+										<label class="is-flex-grow-1">
+											<span class="is-hidden">Task title</span>
+											<input
+												class="input"
+												type="text"
+												title="Update task title input"
+												x-bind:value="taskTitle"
+												x-model="taskTitle"
+											/>
 										</label>
-										<button
-											@click="() => {
+										<div class="is-flex">
+											<button
+												class="button is-small is-primary has-text-weight-bold"
+												title="Save changes"
+												@click="() => {
                                             if(taskTitle.length > 0) {
                                                 updateTask(taskTitle, taskBody, task.id)
                                                 editing = false
                                             }
                                         }"
-										>
-											Save
-										</button>
-										<button
-											@click="() => {
+											>
+												Save
+											</button>
+											<button
+												class="ml-5 button is-small is-danger has-text-weight-bold"
+												title="Discard changes"
+												@click="() => {
                                             if(taskTitle === task.title && taskBody === task.body) {
                                                 taskTitle = task.title
                                                 taskBody = task.body
@@ -84,12 +146,15 @@
                                                 editing = false
                                             }
                                         }"
-										>
-											Discard
-										</button>
+											>
+												Discard
+											</button>
+										</div>
 									</div>
 									<div>
 										<textarea
+											class="textarea"
+											title="Update task body input"
 											x-bind:value="taskBody"
 											x-model="taskBody"
 										></textarea>
@@ -97,123 +162,210 @@
 								</div>
 							</li>
 						</template>
-						<li x-data="{creating: false, taskTitle: '', taskBody: ''}">
-							<button @click="creating = true" x-show="!creating">
+						<li
+							x-data="{creating: false, taskTitle: '', taskBody: ''}"
+							x-bind:class="creating ? 'box' : 'is-align-self-center'"
+						>
+							<button
+								class="button is-primary has-text-weight-bold"
+								@click="creating = true"
+								x-show="!creating"
+							>
 								Create new task
 							</button>
-							<div x-show="creating">
-								<div>
-									<label>
-										<span>Task title</span>
+							<div
+								x-show="creating"
+								@click.outside="() => {
+                                    if(!creating) return 
+                                    if(!taskTitle && !taskBody) {
+                                        taskTitle = ''
+                                        taskBody = ''
+                                        creating = false
+                                        return
+                                    }
+                                    if(confirm('Are you sure you want to discard all the changes?')) {
+                                        taskTitle = ''
+                                        taskBody = ''
+                                        creating = false
+                                    }
+                                }"
+							>
+								<div
+									class="is-flex mb-4 is-align-items-end is-flex-wrap-wrap gap"
+								>
+									<label class="is-flex-grow-1">
+										<span>Task title*</span>
 										<input
+											class="input"
 											type="text"
 											x-model="taskTitle"
 											x-bind:value="taskTitle"
 											name="taskTitle"
-										/>*
-									</label>
-									<label>
-										<span>Task body</span>
-										<textarea
-											x-model="taskBody"
-											x-bind:value="taskBody"
-											cols="30"
-											rows="10"
-											name="taskBody"
-										></textarea>
-									</label>
-								</div>
-								<div>
-									<button
-										@click="() => {
-                                        if(taskTitle.length === 0) {
-                                            alert('Task title field is empty! Please fill the task title field.')
-                                            return
-                                        }
-                                        createNewTask(taskTitle, taskBody)
-                                        taskTitle = ''
-                                        taskBody = ''
-                                        creating = false
-                                    }"
-									>
-										Save
-									</button>
-									<button
-										@click="() => {
-                                        if(!taskTitle && !taskBody) {
-                                            taskTitle = ''
-                                            taskBody = ''
-                                            creating = false
-                                            return
-                                        }
-                                        if(confirm('Are you sure you want to discard all the changes?')) {
-                                            taskTitle = ''
-                                            taskBody = ''
-                                            creating = false
-                                        }
-                                    }"
-									>
-										Discard
-									</button>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</div>
-				<div>
-					<h3>Done</h3>
-					<ul>
-						<template x-for="task in getDoneTasks()">
-							<li
-								x-data="{showBody: false, editing: false, taskTitle: task.title, taskBody: task.body}"
-							>
-								<div x-show="!editing">
-									<div>
-										<button
-											@click="showBody = !showBody"
-											x-bind:disabled="task.body.length === 0"
-										>
-											details
-										</button>
-										<h4 x-text="task.title"></h4>
-										<input
-											type="checkbox"
-											x-bind:checked="task.status === 'done'"
-											@change="toggleTaskStatus(task.id)"
 										/>
-										<button @click="editing = true">Edit</button>
+									</label>
+									<div class="mb-2 is-flex">
 										<button
+											class="button is-small is-primary has-text-weight-bold"
 											@click="() => {
-                                            if(confirm('Are you sure you want to delete this task?')) {
-                                                deleteTask(task.id)
+                                            if(taskTitle.length === 0) {
+                                                alert('Task title field is empty! Please fill the task title field.')
+                                                return
                                             }
-                                        }"
-										>
-											delete
-										</button>
-									</div>
-									<div x-show="showBody" x-transition>
-										<p x-text="task.body"></p>
-									</div>
-								</div>
-								<div x-show="editing">
-									<div>
-										<label>
-											<span>Task title</span>
-											<input x-bind:value="taskTitle" x-model="taskTitle" />
-										</label>
-										<button
-											@click="() => {
-                                            if(taskTitle.length > 0) {
-                                                updateTask(taskTitle, taskBody, task.id)
-                                                editing = false
-                                            }
+                                            createNewTask(taskTitle, taskBody)
+                                            taskTitle = ''
+                                            taskBody = ''
+                                            creating = false
                                         }"
 										>
 											Save
 										</button>
 										<button
+											class="ml-5 button is-small is-danger has-text-weight-bold"
 											@click="() => {
+                                            if(!taskTitle && !taskBody) {
+                                                taskTitle = ''
+                                                taskBody = ''
+                                                creating = false
+                                                return
+                                            }
+                                            if(confirm('Are you sure you want to discard all the changes?')) {
+                                                taskTitle = ''
+                                                taskBody = ''
+                                                creating = false
+                                            }
+                                        }"
+										>
+											Discard
+										</button>
+									</div>
+								</div>
+								<label>
+									<span>Task body</span>
+									<textarea
+										class="textarea"
+										x-model="taskBody"
+										x-bind:value="taskBody"
+										cols="30"
+										rows="10"
+										name="taskBody"
+									></textarea>
+								</label>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+				<div class="box has-background-white-ter">
+					<h3 class="title is-4">Done</h3>
+					<ul class="is-flex is-flex-direction-column">
+						<template x-for="task in getDoneTasks()">
+							<li
+								class="box"
+								x-data="{showBody: false, editing: false, taskTitle: task.title, taskBody: task.body}"
+								@click.outside="() => {
+                                    if(!editing) return
+                                    if(taskTitle === task.title && taskBody === task.body) {
+                                        taskTitle = task.title
+                                        taskBody = task.body
+                                        editing = false
+                                        return
+                                    }
+                                    if(confirm('Are you sure you want to discard all the changes?')) {
+                                        taskTitle = task.title
+                                        taskBody = task.body
+                                        editing = false
+                                    }
+                                }"
+							>
+								<div x-show="!editing">
+									<div
+										class="is-flex is-align-items-center is-flex-wrap-wrap gap"
+									>
+										<button
+											class="button is-small"
+											@click="showBody = !showBody"
+											x-bind:disabled="task.body.length === 0"
+											x-bind:title="task.body ? 'Show task details' : 'This task has no details'"
+										>
+											Details
+										</button>
+										<div class="is-flex is-flex-grow-1">
+											<h4
+												class="is-flex-grow-1 mr-4"
+												title="Task title"
+												x-text="task.title"
+											></h4>
+											<input
+												type="checkbox"
+												x-bind:title="task.status === 'inProgress' ? 'Set this task status to done' : 'Set this task status to in propgress'"
+												x-bind:checked="task.status === 'done'"
+												@change="toggleTaskStatus(task.id)"
+											/>
+										</div>
+										<div class="is-flex is-align-items-center">
+											<button
+												class="button is-small is-primary has-text-weight-bold"
+												title="Edit this task"
+												@click="editing = true"
+											>
+												Edit
+											</button>
+											<button
+												class="ml-5 button is-small is-danger has-text-weight-bold"
+												title="Delete this task"
+												@click="() => {
+                                                if(confirm('Are you sure you want to delete this task?')) {
+                                                    deleteTask(task.id)
+                                                }
+                                            }"
+											>
+												Delete
+											</button>
+										</div>
+									</div>
+									<div
+										class="box mt-4 has-background-grey-lighter"
+										x-show="showBody"
+										x-transition
+									>
+										<p
+											class="has-text-dark"
+											title="Task body - details"
+											x-text="task.body"
+										></p>
+									</div>
+								</div>
+								<div x-show="editing">
+									<div
+										class="is-flex is-align-items-center mb-4 gap is-flex-wrap-wrap"
+									>
+										<label class="is-flex-grow-1">
+											<span class="is-hidden">Task title</span>
+											<input
+												class="input"
+												type="text"
+												title="Update task title input"
+												x-bind:value="taskTitle"
+												x-model="taskTitle"
+											/>
+										</label>
+										<div class="is-flex">
+											<button
+												class="button is-small is-primary has-text-weight-bold"
+												title="Save changes"
+												@click="() => {
+                                            if(taskTitle.length > 0) {
+                                                updateTask(taskTitle, taskBody, task.id)
+                                                editing = false
+                                            }
+                                        }"
+											>
+												Save
+											</button>
+											<button
+												class="ml-5 button is-small is-danger has-text-weight-bold"
+												title="Discard changes"
+												@click="() => {
                                             if(taskTitle === task.title && taskBody === task.body) {
                                                 taskTitle = task.title
                                                 taskBody = task.body
@@ -226,12 +378,15 @@
                                                 editing = false
                                             }
                                         }"
-										>
-											Discard
-										</button>
+											>
+												Discard
+											</button>
+										</div>
 									</div>
 									<div>
 										<textarea
+											class="textarea"
+											title="Update task body input"
 											x-bind:value="taskBody"
 											x-model="taskBody"
 										></textarea>

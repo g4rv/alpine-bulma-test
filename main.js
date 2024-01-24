@@ -6,8 +6,8 @@ Alpine.store('tasks', {
 	taskList: localStorage.getItem('taskList')
 		? JSON.parse(localStorage.getItem('taskList'))
 		: [
-				{ title: 'test', body: 'test', status: 'done', id: uuid() },
-				{ title: 'test', body: 'test', status: 'inProgress', id: uuid() },
+				{ title: 'test1', body: 'test1', status: 'done', id: uuid() },
+				{ title: 'test2', body: 'test2', status: 'inProgress', id: uuid() },
 		  ],
 
 	getDoneTasks() {
